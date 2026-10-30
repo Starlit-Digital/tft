@@ -1,4 +1,5 @@
-import {$,element,announce,api} from './common.js';
+import {exportTicket,sampleTicket} from './model.js';
+import {$,element,announce,api,download} from './common.js';
 import {mountComposer} from './composer.js';
 import {mountNavigation} from './navigation.js';
 import {mountTicketDetails} from './details.js';
@@ -67,7 +68,10 @@ $('clear-filters').onclick=()=>{for(const id of ['search','filter-status','filte
 $('refresh').onclick=async()=>{if(loading)return;loading=true;$('refresh').disabled=true;try{await refresh();announce('Workspace refreshed.');}catch(error){announce(error.message);}finally{loading=false;$('refresh').disabled=false;}};
 $('seed-demo').onclick=async()=>{if(loading)return;loading=true;$('seed-demo').disabled=true;try{const result=await api('seed',{body:{confirm:true},csrf:boot.csrf});await refresh();announce(result.added?`${result.added} fictional sample tickets added. Existing records were preserved.`:'The sample workspace is already loaded.');}catch(error){$('seed-demo').disabled=false;announce(error.message);}finally{loading=false;}};
 try{
-  boot=await api('bootstrap');details=mountTicketDetails({boot,onChanged:refresh});
+  boot=await api('bootstrap');
+  $('download-sample').disabled=false;$('download-sample').onclick=()=>download(exportTicket(sampleTicket(boot.settings.config)),'tft-sample-ticket.json','application/json');
+  if(boot.publicDemo)$('workspace-policy').textContent='Session sandbox · expires within 24 hours';
+  details=mountTicketDetails({boot,onChanged:refresh});
   for(const value of boot.operations.statuses)$('filter-status').append(new Option(value,value));
   for(const group of boot.settings.config.workgroups)$('filter-workgroup').append(new Option(group.name,group.code));
   for(const value of boot.operations.priorities)$('filter-priority').append(new Option(value,value));
@@ -76,5 +80,5 @@ try{
   const overview=await api('overview');
   if(overview.total===0&&!overview.seeded)await api('seed',{body:{confirm:true},csrf:boot.csrf});
   await refresh();$('refresh').disabled=false;
-  announce('Ready. Fictional demo data stays in this session. Agent assignment is a simulation.');
+  announce(boot.publicDemo?'Demonstration ready. This workspace expires within 24 hours. Use fictional information only.':'Ready. Fictional demo data stays in this session. Agent assignment is a simulation.');
 }catch(error){announce(error.message);}

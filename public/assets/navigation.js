@@ -6,7 +6,7 @@ export function mountNavigation() {
     for(const link of document.querySelectorAll('[data-route]')){
       if(link.dataset.route===route)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');
     }
-    const title=document.getElementById(`${route}-title`);document.title=`TFT | ${route==='compose'?'New ticket':route.charAt(0).toUpperCase()+route.slice(1)}`;
+    const title=document.getElementById(`${route}-title`);document.title=`tft | ${route==='compose'?'New ticket':route.charAt(0).toUpperCase()+route.slice(1)}`;
     if(focus)title.focus();
   }
   window.addEventListener('hashchange',()=>show(true));show();

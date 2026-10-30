@@ -38,3 +38,7 @@ Settings and ticket revision conflicts return 409. A missing or unowned detail o
 All queue, detail, workflow, event and fixture operations are scoped to the session. A host administrator token grants system settings writes, not access to another session's tickets. Agents and event actor labels are demo fixtures, not authenticated staff accounts.
 
 Settings and templates use text substitution only. There is no expression evaluation, SQL interpolation, HTML rendering or remote template loading. The browser renders imported and saved values as text.
+
+## Public host profile
+
+The hosted bridge uses the same API behind a dedicated `tft_session` cookie with a `/tft/` path. Bootstrap additionally returns `publicDemo` and `expiresAt`. The hosted profile locks system settings and applies the limits and expiry documented in [Hosted demonstration](HOSTING.md). Quota and rate limits return 429 with Retry-After. Capacity returns 503. Local defaults remain unchanged unless the profile is enabled.

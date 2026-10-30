@@ -1,5 +1,15 @@
 # Change history
 
+## 0.2.1, October 30, 2026
+
+* Published the source repository and prepared the live demonstration at sltd.ca/tft, linked under Developer tools.
+* Standardized the visible product name as lowercase tft. Existing transfer protocol and environment identifiers remain compatible.
+* Added a clear demonstration notice, top GitHub link, suggested workflow guide and sample JSON download.
+* Split the public API bridge from the private HTTP implementation for hosted deployment.
+* Added dedicated session cookies, a fixed 24 hour workspace expiry, lazy retention cleanup, usage quotas and hashed address rate limits for the public demo.
+* Locked shared system settings on the public demonstration while retaining personal field and format editing.
+* Added hosted layout and public policy regression tests. Kept modules, schema files, databases and secrets outside the web root.
+
 ## 0.2.0, October 30, 2026
 
 First versioned source package for the modern service desk demo.

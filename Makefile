@@ -5,9 +5,11 @@ test:
 	php tests/tickets.php
 	php tests/settings.php
 	php tests/workflow.php
+	php tests/public-demo.php
 	node tests/templates.mjs
 	node tests/preferences.mjs
 	python3 tests/api.py
+	python3 tests/hosted.py
 	node tests/ui.mjs
 	python3 tests/assets.py
 

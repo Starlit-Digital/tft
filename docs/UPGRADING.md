@@ -12,7 +12,7 @@ Open http://127.0.0.1:8094. The runtime uses native browser modules and needs no
 
 A new empty session loads ten fictional scenarios into its own private workspace. Existing sessions with tickets are left intact; their Load sample tickets button can append the same scenario set once. Agent names are fictional assignment targets, not signed in staff or delivery recipients.
 
-## Upgrade from earlier TFT source
+## Upgrade from earlier tft source
 
 Stop the PHP process. Back up the private SQLite database and any host configuration outside the web root before replacing program files. Replace source and public assets together. Keep `var/`, any configured `TFT_DB_PATH`, session storage and secrets. Never upload runtime records or configuration into Git.
 
@@ -40,8 +40,10 @@ make package
 make verify-package
 ```
 
-The builder archives the complete committed source and excludes runtime data, original recovery files, secrets, dependencies and generated distributions. It writes `dist/tft-0.2.0-source.zip` and its SHA256 receipt. Every package contains `PACKAGE-MANIFEST.json` with the version, source commit and each file's size and SHA256. It refuses an uncommitted checkout so the manifest identifies an immutable source state.
+The builder archives the complete committed source and excludes runtime data, original recovery files, secrets, dependencies and generated distributions. It writes `dist/tft-0.2.1-source.zip` and its SHA256 receipt. Every package contains `PACKAGE-MANIFEST.json` with the version, source commit and each file's size and SHA256. It refuses an uncommitted checkout so the manifest identifies an immutable source state.
 
 Verification checks all entries and digests, extracts into a temporary directory, runs `npm ci --ignore-scripts` there and runs the entire suite from that extracted source. The package and receipt remain local artifacts; this does not upload or publish a release. GitHub source downloads receive the same committed runtime, fixtures, assets, tests and documentation, while `make package` additionally supplies a manifest.
 
 A source ZIP without Git history can still run the app and tests. Building another immutable source package requires a Git checkout.
+
+For the public demonstration, use the split layout and host policy in [Hosted demonstration](HOSTING.md). Public demo limits are enabled only by that host policy.

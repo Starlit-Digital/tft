@@ -4,9 +4,9 @@ Open `settings.html` from the ticket workspace. This implements a configurable t
 
 ## Design source
 
-The owner's DYWS Order forms editor is the interaction reference: available fields, property controls, preview, named formats, undo, protected essential fields and revision checked saves. Source read from `dyws/docs/order-format.md`, `public_html/plugins/order-format/model.js`, `editor.js` and `plugins/order-format/Templates.php`. No DYWS ordering code or dependencies were copied into TFT.
+The owner's DYWS Order forms editor is the interaction reference: available fields, property controls, preview, named formats, undo, protected essential fields and revision checked saves. Source read from `dyws/docs/order-format.md`, `public_html/plugins/order-format/model.js`, `editor.js` and `plugins/order-format/Templates.php`. No DYWS ordering code or dependencies were copied into tft.
 
-The recovered TFT location suggestion code fills a site code, workgroup code and routing comment. Its separate troubleshooting dropdown inserts reusable issue snippets. Those are separate interactions. This version adds a generic coded workgroup dropdown; it does not copy the original directory or claim to restore the absent database.
+The recovered tft location suggestion code fills a site code, workgroup code and routing comment. Its separate troubleshooting dropdown inserts reusable issue snippets. Those are separate interactions. This version adds a generic coded workgroup dropdown; it does not copy the original directory or claim to restore the absent database.
 
 The Starlit Review bench composition, slug `calibre-grading-bench-page`, is the visual reference for a bordered workspace, source and output panels, compact state indicators and restrained gold and teal accents. The settings workspace adapts it to a field list, form canvas and property rail. It does not import the fictional marketing claims, gauge or animation. Shared palette tokens and the canonical full preferences center are copied from the Starlit library; digests are in `asset-provenance.json`. Library attribution: https://instalanding.ai/p/calibre-grading-bench-page.txt, declared MIT in the source collection. Preserve the original library notices if importing more template source later.
 
@@ -85,4 +85,4 @@ Real browser visual inspection, narrow viewport layout, keyboard focus traversal
 
 ## Service desk update
 
-Version 0.2.0 adds the top workspace navigation and ticket lifecycle described in [Ticket workflow](workflows.md). The settings page keeps the same field and format editing behavior within that shared shell. A local preference adapter change makes Studio default resolve `--sdou-host-font`, which TFT maps to its system font stack. Explicit visitor sans, serif and mono choices remain available. The original source digest and adapted digest are recorded in the asset manifest.
+Version 0.2.0 adds the top workspace navigation and ticket lifecycle described in [Ticket workflow](workflows.md). The settings page keeps the same field and format editing behavior within that shared shell. A local preference adapter change makes Studio default resolve `--sdou-host-font`, which tft maps to its system font stack. Explicit visitor sans, serif and mono choices remain available. The original source digest and adapted digest are recorded in the asset manifest.

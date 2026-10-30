@@ -8,6 +8,7 @@ function categories(): array
 
 require_once __DIR__ . "/Settings.php";
 require_once __DIR__ . "/Workflow.php";
+require_once __DIR__ . "/PublicDemo.php";
 
 function validateTicket(array $input, ?array $settings = null): array
 {
@@ -82,13 +83,14 @@ final class TicketStore
     }
 
     public function settings(): SettingsStore { return new SettingsStore($this->db); }
+    public function publicDemo(): PublicDemo { return new PublicDemo($this->db); }
     public function workflow(): Workflow { return $this->workflow; }
 
     private function insert(string $workspace, array $ticket, ?array $settings, ?string $formatId, ?string $time = null): array
     {
         $settings ??= defaultSettings();
         $spec = ['config' => $settings, 'formatId' => $formatId ?? $settings['defaultFormat']];
-        $record = ['id' => 'TFT-' . strtoupper(bin2hex(random_bytes(6))), 'created_at' => $time ?? gmdate('c'), 'ticket' => $ticket, 'formatted' => renderTicket($ticket, $settings, $spec['formatId']), 'spec' => $spec];
+        $record = ['id' => 'tft-' . strtoupper(bin2hex(random_bytes(6))), 'created_at' => $time ?? gmdate('c'), 'ticket' => $ticket, 'formatted' => renderTicket($ticket, $settings, $spec['formatId']), 'spec' => $spec];
         $query = $this->db->prepare('INSERT INTO tickets (id, workspace, created_at, payload, formatted, spec) VALUES (?, ?, ?, ?, ?, ?)');
         $query->execute([$record['id'], $workspace, $record['created_at'], json_encode($ticket, JSON_THROW_ON_ERROR), $record['formatted'], json_encode($spec, JSON_THROW_ON_ERROR)]);
         $this->workflow->created($workspace, $record['id'], $ticket, $record['created_at']);

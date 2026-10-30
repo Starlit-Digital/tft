@@ -1,0 +1,21 @@
+<FilesMatch "\.(php|phtml)$">
+SetHandler application/x-lsphp82
+</FilesMatch>
+Options -Indexes
+DirectoryIndex index.html
+RewriteEngine On
+RewriteRule ^index\.html$ /tft/ [R=301,L]
+RewriteRule ^(?:src|config|var|docs|tests|scripts|node_modules)(?:/|$) - [F,L,NC]
+<IfModule mod_expires.c>
+ExpiresActive Off
+</IfModule>
+<IfModule mod_headers.c>
+Header always set Cache-Control "no-cache"
+Header always set X-Robots-Tag "index, follow"
+</IfModule>
+<FilesMatch "^(api\.php|settings\.html)$">
+<IfModule mod_headers.c>
+Header always set X-Robots-Tag "noindex, nofollow"
+Header always set Cache-Control "no-store"
+</IfModule>
+</FilesMatch>

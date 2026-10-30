@@ -1,4 +1,4 @@
-# TFT
+# tft
 
 A modern demonstration service desk built around configurable ticket fields and useful handoffs. Native browser modules handle the interface; PHP and SQLite own validation, settings, ticket state and history.
 
@@ -52,12 +52,12 @@ The source ZIP, per file commit manifest and SHA256 receipt are written to ignor
 
 ## Scope and verification
 
-This is a local demo, not a publicly deployed helpdesk. A session cookie identifies its workspace; new sessions cannot retrieve old sessions' records or personal settings. Fictional agents simulate assignment. Staff authentication, organization permissions, notifications, retention, quotas and production operations remain future work.
+The live demonstration is https://sltd.ca/tft/. It is not a production helpdesk. A session cookie identifies its workspace; new sessions cannot retrieve old sessions' records or personal settings. Fictional agents simulate assignment. Staff authentication, organization permissions, notifications, retention, quotas and production operations remain future work.
 
 Backend, HTTP, template parity, migration, ownership, DOM workflow, asset and extracted package checks are automated. Real browser visual, keyboard, shade, clipboard and assistive technology verification is pending because local browser access is disabled in Work settings. DOM simulation is not layout or accessibility certification.
 
-The interface adapts the Starlit Review bench composition and the DYWS Order forms editing pattern. Shared asset origins and the local host font adaptation are recorded in [asset provenance](docs/asset-provenance.json). DYWS runtime integration is not present; TFT has no ordering or payment requirement. No email service or public hosting target is configured.
+The interface adapts the Starlit Review bench composition and the DYWS Order forms editing pattern. Shared asset origins and the local host font adaptation are recorded in [asset provenance](docs/asset-provenance.json). DYWS runtime integration is not present; tft has no ordering or payment requirement. No email service is configured. See [Hosted demonstration](docs/HOSTING.md) for private runtime separation, session expiry and usage limits.
 
 Read [Ticket workflow](docs/workflows.md), [Field editor](docs/field-editor.md), [API](docs/api.md), [Recovery](docs/recovery.md), [Datastore findings](docs/datastore.md) and [Roadmap](docs/roadmap.md).
 
-Private source repository: https://github.com/Starlit-Digital/tft
+Public source repository: https://github.com/Starlit-Digital/tft

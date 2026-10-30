@@ -32,7 +32,7 @@ export function importTicket(source, config, categories) {
   let ticket;
   if (source.trimStart().startsWith('{')) {
     const envelope = JSON.parse(source);
-    if (envelope.version !== 1 || !envelope.ticket || typeof envelope.ticket !== 'object' || Array.isArray(envelope.ticket)) throw new Error('Use a TFT version 1 ticket export.');
+    if (envelope.version !== 1 || !envelope.ticket || typeof envelope.ticket !== 'object' || Array.isArray(envelope.ticket)) throw new Error('Use a tft version 1 ticket export.');
     ticket = envelope.ticket;
   } else {
     const lines = source.trim().split(/\r?\n/);

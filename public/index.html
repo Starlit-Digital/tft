@@ -2,23 +2,26 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="robots" content="noindex,nofollow"><meta name="description" content="A demonstration service desk with configurable ticket fields, useful handoffs and a clear record of every change.">
-  <title>TFT | Service desk</title>
+  <meta name="robots" content="index,follow"><link rel="canonical" href="https://sltd.ca/tft/"><meta name="description" content="A demonstration service desk with configurable ticket fields, useful handoffs and a clear record of every change.">
+  <title>tft | Ticket Formatting and Service Desk Demo</title>
+  <meta property="og:type" content="website"><meta property="og:site_name" content="Starlit Digital"><meta property="og:title" content="tft | Ticket Formatting and Service Desk Demo"><meta property="og:description" content="Try configurable ticket fields, output templates, workgroup routing and escalation with fictional sample data."><meta property="og:url" content="https://sltd.ca/tft/"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="tft | Ticket Formatting and Service Desk Demo"><meta name="twitter:description" content="A live demonstration of configurable ticket forms, tagged output and service desk handoffs.">
   <link rel="stylesheet" href="assets/vendor/tokens.css"><link rel="stylesheet" href="assets/accessibility/shared/content.css"><link rel="stylesheet" href="assets/app.css">
   <script type="module" src="assets/accessibility/components/preferences-center/index.js"></script><script type="module" src="assets/app.js"></script>
 </head>
 <body data-default-theme="dark" data-sdou-a11y-content>
 <a class="skip-link" href="#workspace">Skip to workspace</a>
 <div class="app-shell">
-  <header class="app-header"><a class="wordmark" href="index.html#overview"><strong>TFT<span class="brand-dot" aria-hidden="true"></span></strong><span>THE TICKET WORKSPACE</span></a><div class="header-meta"><span class="demo-badge"><i aria-hidden="true"></i> Fictional demo</span><span class="avatar" aria-label="Demo operator">DO</span></div></header>
+  <div class="demo-notice"><div><strong>Demonstration only.</strong> Fictional data. Please do not enter real support records.</div><a href="https://github.com/Starlit-Digital/tft" target="_blank" rel="noopener noreferrer">Get tft on GitHub ↗</a><a href="https://sltd.ca/products.html#developer-tools">Starlit developer tools</a></div>
+<header class="app-header"><a class="wordmark" href="index.html#overview"><strong>tft<span class="brand-dot" aria-hidden="true"></span></strong><span>THE TICKET WORKSPACE</span></a><div class="header-meta"><span class="demo-badge"><i aria-hidden="true"></i> Fictional demo</span><span class="avatar" aria-label="Demo operator">DO</span></div></header>
   <nav class="top-tabs" aria-label="Workspace sections">
     <a href="#overview" data-route="overview" aria-current="page">Overview</a><a href="#tickets" data-route="tickets">Tickets <span id="tab-total" class="tab-count">0</span></a><a href="#compose" data-route="compose">New ticket</a><a href="#escalations" data-route="escalations">Escalations <span id="tab-escalations" class="tab-count">0</span></a><a href="#activity" data-route="activity">Activity</a><a href="settings.html">Settings</a>
   </nav>
-  <div class="workspace-bar"><span><span class="lamp" aria-hidden="true"></span> Your private demo workspace</span><div><button type="button" id="seed-demo" class="quiet" disabled>Load sample tickets</button><button type="button" id="refresh" class="quiet" disabled>Refresh</button></div></div>
+  <div class="workspace-bar"><span><span class="lamp" aria-hidden="true"></span> <span id="workspace-policy">Your private demo workspace</span></span><div><button type="button" id="seed-demo" class="quiet" disabled>Load sample tickets</button><button type="button" id="refresh" class="quiet" disabled>Refresh</button></div></div>
   <p id="status" class="app-status" role="status" aria-live="polite">Connecting to your workspace…</p>
   <main id="workspace" tabindex="-1">
     <section id="view-overview" data-view="overview" aria-labelledby="overview-title">
       <div class="page-heading"><div><p class="eyebrow">WORKSPACE OVERVIEW</p><h1 id="overview-title" tabindex="-1">Your service desk,<br><span>in focus.</span></h1><p>Keep the details close. Make the next handoff count.</p></div><a href="#compose" class="button primary">＋ Create a ticket</a></div>
+      <section class="panel showcase-guide" aria-labelledby="guide-title"><div><h2 id="guide-title">Take it for a spin.</h2><p>Follow a ticket from capture to a useful handoff. These are live demo workflows, using fictional records.</p></div><div class="showcase-steps"><a href="#escalations"><strong>01 / Take a handoff</strong><span>Open an escalation, assign an agent and resolve the sample issue.</span></a><a href="#compose"><strong>02 / Shape a ticket</strong><span>Capture a request and switch between output formats.</span></a><a href="settings.html"><strong>03 / Make it yours</strong><span>Add a field, insert its tag and preview the result.</span></a></div><button type="button" id="download-sample" disabled>Download a sample ticket JSON</button><p class="muted">Import it under New ticket → Import or export ticket fields. Review it before saving.</p></section>
       <div id="metrics" class="metric-grid" aria-label="Ticket counts"></div>
       <div class="dashboard-grid"><section class="panel"><div class="section-head"><div><p class="eyebrow">THE LATEST</p><h2>Across your desk</h2></div><a href="#tickets">View all tickets →</a></div><div id="recent-tickets"></div></section>
       <aside class="panel attention-panel"><p class="eyebrow">NEEDS ATTENTION</p><h2>Keep things moving.</h2><div id="attention"></div><a href="#escalations" class="text-action">Open escalation queue →</a></aside></div>
@@ -43,7 +46,7 @@
       <div class="page-heading compact"><div><p class="eyebrow">WORKSPACE HISTORY</p><h1 id="activity-title" tabindex="-1">The story<br><span>behind the ticket.</span></h1><p>Notes, routing and status changes, recorded as they happen.</p></div><span class="section-marker">LATEST 200 EVENTS</span></div><section class="panel"><div id="activity-list"></div></section>
     </section>
   </main>
-  <footer class="app-footer"><span>TFT <span class="muted">/ Thoughtful tools for useful handoffs.</span></span><span>Fictional data · Local demonstration · <a href="settings.html">Workspace settings</a></span></footer>
+  <footer class="app-footer"><span>tft <span class="muted">/ Thoughtful tools for useful handoffs.</span></span><span>Fictional data · Interactive demonstration · <a href="settings.html">Workspace settings</a></span></footer>
 </div>
 <dialog id="ticket-detail" class="ticket-drawer" aria-labelledby="detail-title">
   <div class="drawer-head"><div><p id="detail-id" class="eyebrow"></p><h2 id="detail-title"></h2><p id="detail-requester" class="muted"></p></div><button type="button" id="close-detail" class="icon-button" aria-label="Close ticket">✕</button></div>

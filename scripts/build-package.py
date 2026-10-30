@@ -22,7 +22,7 @@ def build(output=None):
         raise SystemExit('VERSION must contain a numeric release version.')
     prefix = f'tft-{version}/'
     archive = git('archive', '--format=zip', f'--prefix={prefix}', commit)
-    allowed_roots = {'public', 'src', 'config', 'docs', 'tests', 'scripts', '.github'}
+    allowed_roots = {'public', 'src', 'config', 'docs', 'tests', 'scripts', 'deploy', '.github'}
     allowed_files = {'README.md', 'CHANGELOG.md', 'VERSION', 'Makefile', 'package.json', 'package-lock.json', '.gitignore'}
     manifest = {'version': version, 'sourceCommit': commit, 'files': {}}
     entries = []
@@ -37,7 +37,7 @@ def build(output=None):
             content = source.read(info)
             manifest['files'][str(relative)] = {'sha256': hashlib.sha256(content).hexdigest(), 'bytes': len(content)}
             entries.append((info, content))
-    required = {'public/index.html', 'public/settings.html', 'public/api.php', 'src/Workflow.php', 'config/demo-tickets.json', 'tests/ui.mjs', 'package-lock.json', 'docs/api.md', 'docs/UPGRADING.md'}
+    required = {'public/index.html', 'public/settings.html', 'public/api.php', 'src/Workflow.php', 'src/Http.php', 'src/PublicDemo.php', 'deploy/hostinger/api.php', 'config/demo-tickets.json', 'tests/ui.mjs', 'package-lock.json', 'docs/api.md', 'docs/UPGRADING.md'}
     if not required.issubset(manifest['files']):
         raise SystemExit('Source package is missing required runtime, test or upgrade files.')
     output = Path(output) if output else ROOT / 'dist' / f'tft-{version}-source.zip'
