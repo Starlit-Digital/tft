@@ -1,0 +1,6 @@
+{
+  "access": {"label": "Account access", "questions": {"service": "Which service needs access?", "message": "What message appears?", "lastWorked": "When did access last work?"}},
+  "network": {"label": "Network connection", "questions": {"connection": "Office, home or another connection?", "scope": "One device or several?", "checks": "Which connection checks have you tried?"}},
+  "application": {"label": "Application issue", "questions": {"application": "Which application and version?", "steps": "How can the issue be reproduced?", "expected": "What should happen instead?"}},
+  "hardware": {"label": "Device or hardware", "questions": {"device": "Which device or asset?", "symptoms": "What symptoms are visible?", "started": "When did the problem start?"}}
+}

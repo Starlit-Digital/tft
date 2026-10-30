@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>TFT | Ticket workspace</title><link rel="stylesheet" href="assets/app.css"><script type="module" src="assets/app.js"></script></head>
+<body><main>
+<header><p class="eyebrow">TFT / DEMO WORKSPACE</p><h1>A clearer ticket.<br>A better handoff.</h1><p>Choose an issue, capture the details and copy a consistent ticket.</p><p class="notice">Use fictional information only. Saved tickets belong to this browser session. This is an early local demonstration.</p></header>
+<p id="status" role="status" aria-live="polite">Loading workspace…</p>
+<div class="workspace"><section aria-labelledby="compose"><h2 id="compose">Compose a ticket</h2>
+<form id="ticket"><fieldset disabled id="fields"><legend>Issue details</legend>
+<label>Issue category<select name="category" id="category"></select></label>
+<label>Requester<input name="requester" maxlength="120" required autocomplete="off"></label>
+<label>Issue summary<input name="summary" maxlength="200" required></label>
+<div class="pair"><label>Priority<select name="priority"><option>Low</option><option selected>Normal</option><option>High</option></select></label><label>Asset<input name="asset" maxlength="100"></label></div>
+<label>Location<input name="location" maxlength="200"></label>
+<fieldset id="questions"><legend>Issue questionnaire</legend></fieldset>
+<label>Troubleshooting<textarea name="troubleshooting" maxlength="4000" rows="5"></textarea></label>
+<div class="actions"><button type="submit" id="save">Save demo ticket</button><button type="button" id="example">Load fictional example</button></div>
+</fieldset></form></section>
+<section aria-labelledby="preview-title"><h2 id="preview-title">Ticket preview</h2><p>Formatting updates as you type.</p><label for="preview">Copyable ticket text</label><textarea id="preview" readonly rows="24"></textarea><button type="button" id="copy">Copy ticket</button></section></div>
+<section aria-labelledby="saved-title"><h2 id="saved-title">Saved tickets</h2><p>First administration scaffold. Shows the most recent 100 tickets in this session.</p><button id="refresh" type="button">Refresh tickets</button><div id="saved"></div></section>
+<footer>Generic service desk demonstration. Public hosting and full administration are planned.</footer>
+</main></body></html>
