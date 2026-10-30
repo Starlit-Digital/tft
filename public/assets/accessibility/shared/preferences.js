@@ -229,7 +229,7 @@ export class PreferenceController extends EventTarget {
       measure: s.measure + "ch",
       align: s.align,
       font: {
-        studio: "Georgia,serif",
+        studio: "var(--sdou-host-font,Georgia,serif)",
         sans: "Verdana,Arial,sans-serif",
         serif: "Georgia,serif",
         mono: "ui-monospace,monospace",

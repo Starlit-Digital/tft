@@ -1,7 +1,8 @@
 <!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>TFT | Field editor</title><link rel="stylesheet" href="assets/vendor/tokens.css"><link rel="stylesheet" href="assets/accessibility/shared/content.css"><link rel="stylesheet" href="assets/app.css"><script type="module" src="assets/accessibility/components/preferences-center/index.js"></script><script type="module" src="assets/settings.js"></script></head>
-<body data-default-theme="dark" data-sdou-a11y-content><main>
-<nav aria-label="Main navigation"><a class="wordmark" href="index.html">TFT <span>Ticket workspace</span></a><div><a href="index.html">Tickets</a><a href="settings.html" aria-current="page">Settings</a></div></nav>
-<header><p class="eyebrow">SETTINGS / FIELD EDITOR</p><h1>Shape the ticket.<br><span>Keep the meaning.</span></h1><p>Choose the fields your team needs, then arrange their tags into the output you want.</p></header>
+<body data-default-theme="dark" data-sdou-a11y-content><div class="app-shell"><a class="skip-link" href="#editor">Skip to field editor</a>
+<header class="app-header"><a class="wordmark" href="index.html#overview"><strong>TFT<span class="brand-dot" aria-hidden="true"></span></strong><span>THE TICKET WORKSPACE</span></a><span class="demo-badge"><i aria-hidden="true"></i> Fictional demo</span></header>
+<nav class="top-tabs" aria-label="Workspace sections"><a href="index.html#overview">Overview</a><a href="index.html#tickets">Tickets</a><a href="index.html#compose">New ticket</a><a href="index.html#escalations">Escalations</a><a href="index.html#activity">Activity</a><a href="settings.html" aria-current="page">Settings</a></nav><main>
+<div class="page-heading compact settings-heading"><div><p class="eyebrow">SETTINGS / FIELD EDITOR</p><h1>Shape the ticket.<br><span>Keep the meaning.</span></h1><p>The fields you need. The format your team expects.</p></div><a href="index.html#compose" class="button">Try your ticket form →</a></div>
 <p id="status" role="status" aria-live="polite">Loading settings…</p>
 <div class="toolbar panel"><label>Settings scope<select id="scope"><option value="user">My workspace</option><option value="system">System defaults</option></select></label><p id="scope-note"></p><span id="dirty-state" class="badge">Saved</span></div>
 <div id="admin-access" class="panel" hidden><h2>Administrator access</h2><p id="admin-note"></p><label>Administrator token<input id="admin-token" type="password" autocomplete="off" spellcheck="false"></label><p class="muted">Used only for this page request. It is never saved in browser storage.</p></div>
@@ -17,7 +18,7 @@
 <div class="workspace"><div><label for="template">Output template</label><textarea id="template" rows="16" maxlength="12000" required spellcheck="false"></textarea><p>Tags insert text only. Use <code>{{summary}}</code>, <code>{{workgroup.code}}</code> or a field tag below.</p><div id="tags" class="tags" aria-label="Insert field tags"></div></div><div><h3>Output preview</h3><pre id="output-preview" class="output-preview"></pre><p id="template-errors" role="status"></p></div></div>
 </section></fieldset></form>
 <p class="notice">Personal settings belong to the current demo session. System defaults apply to workspaces that have no personal override. Saved tickets keep their original output.</p>
-<footer>Generic service desk demonstration. Full staff accounts and public hosting are pending.</footer></main>
+<footer class="app-footer"><span>TFT / Workspace settings</span><span>Fictional data · Local demonstration</span></footer></main></div>
 <sdou-preferences-center target="body" storage-key="tft.reading.v1"></sdou-preferences-center>
 <dialog id="confirm-dialog"><h2>Discard unsaved changes?</h2><p id="confirm-text"></p><div class="actions"><button type="button" id="keep-editing">Keep editing</button><button type="button" id="discard">Discard and continue</button></div></dialog>
 </body></html>

@@ -82,3 +82,7 @@ Every new ticket saves normalized field values, its exact output and the active 
 `make test` covers persistence, settings inheritance, workspace isolation, revision conflicts, required fields, invalid workgroups, unknown tags, exact whitespace, all category and format browser/server parity, multiline JSON and tagged text round trips, administrator authorization, CSRF and staged import without saving. A DOM smoke test additionally exercised adding a custom field, editing its template, saving personal settings, composing, previewing, reviewing an import and saving its ticket.
 
 Real browser visual inspection, narrow viewport layout, keyboard focus traversal, clipboard permissions, shade/contrast behavior and assistive technology verification remain pending because local browser access is disabled in the current Work settings. DOM simulation is not visual verification. Public deployment remains outside this change.
+
+## Service desk update
+
+Version 0.2.0 adds the top workspace navigation and ticket lifecycle described in [Ticket workflow](workflows.md). The settings page keeps the same field and format editing behavior within that shared shell. A local preference adapter change makes Studio default resolve `--sdou-host-font`, which TFT maps to its system font stack. Explicit visitor sans, serif and mono choices remain available. The original source digest and adapted digest are recorded in the asset manifest.

@@ -1,0 +1,212 @@
+[
+  {
+    "ticket": {
+      "summary": "Team calendar will not open",
+      "requester": "Alex Example",
+      "category": "application",
+      "priority": "High",
+      "workgroup": "APPS-02",
+      "location": "Demo office \u00b7 Floor 1",
+      "asset": "DEMO-001",
+      "troubleshooting": "Application logs show repeated sync failures. Specialist review requested.",
+      "answers": {
+        "application": "Example Workspace 1.0",
+        "steps": "Open the affected view using a demo account.",
+        "expected": "The requested view should load."
+      }
+    },
+    "status": "Escalated",
+    "assignee": "maya",
+    "ageHours": 3,
+    "note": "Application logs show repeated sync failures. Specialist review requested."
+  },
+  {
+    "ticket": {
+      "summary": "Meeting room display loses its connection",
+      "requester": "Taylor Demo",
+      "category": "hardware",
+      "priority": "Normal",
+      "workgroup": "HELP-01",
+      "location": "Demo office \u00b7 Floor 2",
+      "asset": "DEMO-002",
+      "troubleshooting": "Testing the display cable and docking station.",
+      "answers": {
+        "device": "Demo device 2",
+        "symptoms": "Meeting room display loses its connection",
+        "started": "Earlier today in the scenario."
+      }
+    },
+    "status": "In progress",
+    "assignee": "avery",
+    "ageHours": 6,
+    "note": "Testing the display cable and docking station."
+  },
+  {
+    "ticket": {
+      "summary": "New starter needs access to the project board",
+      "requester": "Morgan Sample",
+      "category": "access",
+      "priority": "Normal",
+      "workgroup": "HELP-01",
+      "location": "Demo office \u00b7 Floor 3",
+      "asset": "DEMO-003",
+      "troubleshooting": "Access request captured. Waiting for service desk triage.",
+      "answers": {
+        "service": "Example Workspace",
+        "message": "Access request or sign in issue.",
+        "lastWorked": "Yesterday in this fictional scenario."
+      }
+    },
+    "status": "Open",
+    "assignee": "",
+    "ageHours": 1,
+    "note": "Access request captured. Waiting for service desk triage."
+  },
+  {
+    "ticket": {
+      "summary": "Office wireless connection drops during calls",
+      "requester": "Casey Example",
+      "category": "network",
+      "priority": "High",
+      "workgroup": "NET-03",
+      "location": "Demo office \u00b7 Floor 1",
+      "asset": "DEMO-004",
+      "troubleshooting": "Multiple demo devices are affected. Network team to review access point logs.",
+      "answers": {
+        "connection": "Demo office network",
+        "scope": "Several demo devices",
+        "checks": "Checked the local connection and restarted the adapter."
+      }
+    },
+    "status": "Escalated",
+    "assignee": "sam",
+    "ageHours": 9,
+    "note": "Multiple demo devices are affected. Network team to review access point logs."
+  },
+  {
+    "ticket": {
+      "summary": "Shared printer is not available",
+      "requester": "Riley Demo",
+      "category": "hardware",
+      "priority": "Low",
+      "workgroup": "HELP-01",
+      "location": "Demo office \u00b7 Floor 2",
+      "asset": "DEMO-005",
+      "troubleshooting": "Waiting for a fictional replacement network cable.",
+      "answers": {
+        "device": "Demo device 5",
+        "symptoms": "Shared printer is not available",
+        "started": "Earlier today in the scenario."
+      }
+    },
+    "status": "Waiting",
+    "assignee": "avery",
+    "ageHours": 18,
+    "note": "Waiting for a fictional replacement network cable."
+  },
+  {
+    "ticket": {
+      "summary": "Report export stops before completion",
+      "requester": "Jamie Sample",
+      "category": "application",
+      "priority": "Normal",
+      "workgroup": "APPS-02",
+      "location": "Demo office \u00b7 Floor 3",
+      "asset": "DEMO-006",
+      "troubleshooting": "Reproduced with a sample report. Reviewing the export settings.",
+      "answers": {
+        "application": "Example Workspace 1.0",
+        "steps": "Open the affected view using a demo account.",
+        "expected": "The requested view should load."
+      }
+    },
+    "status": "In progress",
+    "assignee": "maya",
+    "ageHours": 25,
+    "note": "Reproduced with a sample report. Reviewing the export settings."
+  },
+  {
+    "ticket": {
+      "summary": "Password reset completed",
+      "requester": "Robin Example",
+      "category": "access",
+      "priority": "Normal",
+      "workgroup": "HELP-01",
+      "location": "Demo office \u00b7 Floor 1",
+      "asset": "DEMO-007",
+      "troubleshooting": "Demo requester confirmed that access works after the reset.",
+      "answers": {
+        "service": "Example Workspace",
+        "message": "Access request or sign in issue.",
+        "lastWorked": "Yesterday in this fictional scenario."
+      }
+    },
+    "status": "Resolved",
+    "assignee": "jordan",
+    "ageHours": 32,
+    "note": "Demo requester confirmed that access works after the reset."
+  },
+  {
+    "ticket": {
+      "summary": "Cannot reach the demo file share",
+      "requester": "Drew Sample",
+      "category": "network",
+      "priority": "Normal",
+      "workgroup": "NET-03",
+      "location": "Demo office \u00b7 Floor 2",
+      "asset": "DEMO-008",
+      "troubleshooting": "Issue captured with connection details. Ready for triage.",
+      "answers": {
+        "connection": "Demo office network",
+        "scope": "One demo device",
+        "checks": "Checked the local connection and restarted the adapter."
+      }
+    },
+    "status": "Open",
+    "assignee": "",
+    "ageHours": 2,
+    "note": "Issue captured with connection details. Ready for triage."
+  },
+  {
+    "ticket": {
+      "summary": "Laptop dock does not detect the monitor",
+      "requester": "Quinn Demo",
+      "category": "hardware",
+      "priority": "Low",
+      "workgroup": "HELP-01",
+      "location": "Demo office \u00b7 Floor 3",
+      "asset": "DEMO-009",
+      "troubleshooting": "A demo firmware update restored the external display.",
+      "answers": {
+        "device": "Demo device 9",
+        "symptoms": "Laptop dock does not detect the monitor",
+        "started": "Earlier today in the scenario."
+      }
+    },
+    "status": "Resolved",
+    "assignee": "avery",
+    "ageHours": 46,
+    "note": "A demo firmware update restored the external display."
+  },
+  {
+    "ticket": {
+      "summary": "Request to enable a calendar feature",
+      "requester": "Skyler Example",
+      "category": "application",
+      "priority": "Low",
+      "workgroup": "APPS-02",
+      "location": "Demo office \u00b7 Floor 1",
+      "asset": "DEMO-010",
+      "troubleshooting": "Waiting for fictional requester confirmation of the feature requirements.",
+      "answers": {
+        "application": "Example Workspace 1.0",
+        "steps": "Open the affected view using a demo account.",
+        "expected": "The requested view should load."
+      }
+    },
+    "status": "Waiting",
+    "assignee": "jordan",
+    "ageHours": 21,
+    "note": "Waiting for fictional requester confirmation of the feature requirements."
+  }
+]

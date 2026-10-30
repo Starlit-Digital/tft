@@ -7,7 +7,9 @@
   {
     "source": "templates/starlit/accessibility/shared/preferences.js",
     "target": "tft/public/assets/accessibility/shared/preferences.js",
-    "sha256": "d3b44176517e12b850dfdaf0bf46e19246037740d609218836aa67b84a0154ac"
+    "sha256": "3ff242c05c78c4bd315c47b8ef590d3da5d566a764dd869bcb776f5182e9bdfd",
+    "sourceSha256": "d3b44176517e12b850dfdaf0bf46e19246037740d609218836aa67b84a0154ac",
+    "adaptation": "Studio font resolves the owning host font token, with original serif fallback. Visitor font selections remain unchanged."
   },
   {
     "source": "templates/starlit/accessibility/shared/ui.css",
@@ -33,5 +35,10 @@
     "source": "templates/starlit/accessibility/components/preferences-center/component.css",
     "target": "tft/public/assets/accessibility/components/preferences-center/component.css",
     "sha256": "ae11d076d15bf42828f60626d29d0d22cb56ced8fa513b078d443def6d742a19"
+  },
+  {
+    "source": "templates/starlit/brand/tokens.css",
+    "target": "tft/public/assets/vendor/tokens.css",
+    "sha256": "ab6efbb17b95687c443b93027b9120c8ab19c20bc9e8a66e64a73c770d125170"
   }
 ]

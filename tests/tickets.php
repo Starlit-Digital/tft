@@ -4,7 +4,7 @@ require __DIR__ . '/../src/Tickets.php';
 function check(bool $condition, string $message): void { if (!$condition) throw new RuntimeException($message); }
 $input = ['category' => 'network', 'requester' => 'Alex Example', 'summary' => 'Connection unavailable', 'answers' => ['scope' => 'One device'], 'priority' => 'High'];
 $ticket = validateTicket($input);
-check(str_contains(formatTicket($ticket), "One device"), 'Questionnaire answer must appear in ticket.');
+check(str_contains(renderTicket($ticket, defaultSettings(), 'standard'), "One device"), 'Questionnaire answer must appear in ticket.');
 $path = sys_get_temp_dir() . '/tft-test-' . bin2hex(random_bytes(8)) . '/tickets.sqlite';
 try {
     $store = new TicketStore($path);
@@ -19,6 +19,6 @@ try {
     }
     $payload = array_replace($input, ['summary' => "<script>alert('demo')</script>"]);
     $saved = $store->save('workspace-a', validateTicket($payload));
-    check(str_contains($saved['formatted'], '<SCRIPT>'), 'Text must remain text, never be rendered as HTML by the UI.');
+    check(str_contains($saved['formatted'], '<script>'), 'Text must remain text, never be rendered as HTML by the UI.');
     echo "PASS persistence, workspace isolation, validation and plain text storage\n";
 } finally { if (is_file($path)) unlink($path); if (is_dir(dirname($path))) rmdir(dirname($path)); }

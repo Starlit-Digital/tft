@@ -76,7 +76,23 @@ with tempfile.TemporaryDirectory(prefix='tft-api-') as temp:
         assert code == 200 and reset['inherited']
         assert request(a, 'tickets')[1]['tickets'][0]['formatted'] == saved['formatted'], 'Saved output changed.'
         assert request(a, 'settings', scope='another-user')[0] == 404
-        print('PASS HTTP administrator authorization, CSRF, settings isolation, stale writes, staged import validation and saved output preservation')
+        # A browser cannot read or mutate another session's workflow through a ticket ID.
+        ticket_id = saved['id']
+        assert request(b, 'ticket&id=' + ticket_id)[0] == 404
+        assert request(b, 'update', {'id': ticket_id, 'revision': 1, 'note': 'Unauthorized'}, other['csrf'])[0] == 404
+        assert request(a, 'update', {'id': ticket_id, 'revision': 1, 'note': 'No CSRF'})[0] == 403
+        code, updated = request(a, 'update', {'id': ticket_id, 'revision': 1, 'status': 'Escalated', 'workgroup': 'NET-03', 'assignee': 'sam', 'note': 'Specialist review requested.'}, csrf)
+        assert code == 200 and updated['workflow']['revision'] == 2
+        assert updated['events'][0]['kind'] == 'escalated'
+        assert request(a, 'update', {'id': ticket_id, 'revision': 1, 'note': 'Stale change'}, csrf)[0] == 409
+        assert request(b, 'activity')[1]['events'] == []
+        assert request(a, 'seed', {'confirm': True})[0] == 403
+        assert request(a, 'seed', {'confirm': True}, csrf)[1]['added'] == 10
+        assert request(a, 'seed', {'confirm': True}, csrf)[1]['added'] == 0
+        assert request(a, 'overview')[1]['total'] == 11
+        assert request(b, 'overview')[1]['total'] == 0
+        assert request(a, 'tickets&status=Escalated')[1]['matched'] == 3
+        print('PASS HTTP administrator authorization, CSRF, settings isolation, stale writes, staged import validation and saved output preservation; workflow ownership, seed idempotence and queue totals')
     finally:
         server.terminate()
         server.wait(timeout=5)

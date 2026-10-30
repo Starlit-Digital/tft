@@ -17,7 +17,7 @@ try {
     if (!in_array($method, ['GET', 'POST'], true)) {
         http_response_code(405); header('Allow: GET, POST'); echo json_encode(['error' => 'Method not allowed.']); exit;
     }
-    if (!in_array($action, ['bootstrap', 'tickets', 'settings', 'reset', 'validate'], true) || !in_array($scope, ['user', 'system'], true)) {
+    if (!in_array($action, ['bootstrap', 'tickets', 'settings', 'reset', 'validate', 'ticket', 'overview', 'activity', 'seed', 'update'], true) || !in_array($scope, ['user', 'system'], true)) {
         http_response_code(404); echo json_encode(['error' => 'Unknown action or scope.']); exit;
     }
     if ($method === 'POST' && !hash_equals($_SESSION['csrf'], $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '')) {
@@ -41,11 +41,20 @@ try {
     $effective = $settings->get($workspace, 'user');
     if ($method === 'GET') {
         $result = match ($action) {
-            'bootstrap' => ['categories' => categories(), 'csrf' => $_SESSION['csrf'], 'settings' => $effective, 'tags' => availableTags($effective['config']), 'adminConfigured' => strlen(getenv('TFT_ADMIN_TOKEN') ?: '') >= 32],
+            'bootstrap' => ['categories' => categories(), 'csrf' => $_SESSION['csrf'], 'settings' => $effective, 'tags' => availableTags($effective['config']), 'adminConfigured' => strlen(getenv('TFT_ADMIN_TOKEN') ?: '') >= 32, 'operations' => ['statuses' => Workflow::STATUSES, 'priorities' => Workflow::PRIORITIES, 'transitions' => Workflow::TRANSITIONS, 'agents' => Workflow::agents()]],
             'settings' => $settings->get($workspace, $scope),
-            'tickets' => ['tickets' => $store->list($workspace)],
+            'tickets' => $store->queue($workspace, $_GET),
+            'ticket' => $store->get($workspace, settingText($_GET['id'] ?? null, 40), $effective['config']),
+            'overview' => $store->overview($workspace) + ['recent' => array_slice($store->list($workspace), 0, 5)],
+            'activity' => ['events' => $store->workflow()->events($workspace)],
             default => throw new InvalidArgumentException('Use POST for this action.')
         };
+    } elseif ($action === 'seed') {
+        if (($body['confirm'] ?? false) !== true) throw new InvalidArgumentException('Confirm loading the fictional demo workspace.');
+        $result = $store->seed($workspace);
+    } elseif ($action === 'update') {
+        $store->workflow()->update($workspace, $body, $effective['config']);
+        $result = $store->get($workspace, $body['id'], $effective['config']);
     } elseif ($action === 'settings' || $action === 'reset') {
         $result = $settings->save($workspace, $scope, $body, $action === 'reset');
     } elseif ($action === 'tickets' || $action === 'validate') {
@@ -63,7 +72,9 @@ try {
         if ($action === 'tickets') http_response_code(201);
     } else { throw new InvalidArgumentException('Use GET for bootstrap.'); }
     echo json_encode($result, JSON_THROW_ON_ERROR);
-} catch (SettingsConflict $error) {
+} catch (TicketNotFound $error) {
+    http_response_code(404); echo json_encode(['error' => $error->getMessage()]);
+} catch (SettingsConflict | TicketConflict $error) {
     http_response_code(409); echo json_encode(['error' => $error->getMessage()]);
 } catch (InvalidArgumentException | JsonException | TypeError $error) {
     http_response_code(422); echo json_encode(['error' => $error instanceof TypeError ? 'Check the submitted settings and field types.' : $error->getMessage()]);

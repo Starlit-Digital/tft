@@ -1,93 +1,80 @@
-import {$,element,announce,api,download,copy} from './common.js';
-import {renderTemplate,exportTicket,importTicket,sampleTicket} from './model.js';
-let boot, config, activeCategory = '', pending = null, dirty = false;
-const drafts = {};
-const toolIds=['example','export-json','export-text','review-import','import-file','copy','copy-transfer','download-output'];
-for(const id of toolIds) $(id).disabled=true;
-function ticket() {
-  return {...Object.fromEntries(config.fields.map(field=>[field.id,($('ticket').elements.namedItem(field.id)?.value || '').trim()])),category:$('category').value,answers:Object.fromEntries([...$('questions').querySelectorAll('textarea')].map(input=>[input.dataset.key,input.value.trim()]))};
+import {$,element,announce,api} from './common.js';
+import {mountComposer} from './composer.js';
+import {mountNavigation} from './navigation.js';
+import {mountTicketDetails} from './details.js';
+import {badge,ticketList,eventList,emptyState,groupName,agentName,timestamp} from './views.js';
+
+const navigation=mountNavigation();
+let boot,details,queueRequest=0,queueAbort,loading=false,searchTimer;
+function filters(){return {q:$('search').value.trim(),status:$('filter-status').value,workgroup:$('filter-workgroup').value,priority:$('filter-priority').value,assignee:$('filter-assignee').value};}
+function openTicket(id,source){details.show(id,source).catch(error=>announce(error.message));}
+function queueView(data){
+  $('queue-count').textContent=`${data.matched} ${data.matched===1?'ticket':'tickets'}${data.matched>data.limit?` · showing the latest ${data.limit}`:''}`;
+  $('ticket-list').replaceChildren(data.tickets.length?ticketList(data.tickets,{onOpen:openTicket,agents:boot.operations.agents,config:boot.settings.config}):emptyState('A clear queue.','No tickets match these filters. Try another search or create a new ticket.',element('a','Create a ticket',{href:'#compose',class:'button'})));
 }
-function preview() {
-  try { $('preview').value = renderTemplate(ticket(),config,boot.categories,$('output-format').value); }
-  catch(error) { announce(error.message); }
+async function refreshQueue(){
+  queueAbort?.abort();queueAbort=new AbortController();const version=++queueRequest;$('ticket-list').setAttribute('aria-busy','true');
+  try{const data=await api('tickets',{query:filters(),signal:queueAbort.signal});if(version===queueRequest)queueView(data);}
+  catch(error){if(error.name!=='AbortError')announce(error.message);}
+  finally{if(version===queueRequest)$('ticket-list').removeAttribute('aria-busy');}
 }
-function questionnaire(save = true) {
-  if (save && activeCategory) drafts[activeCategory] = ticket().answers;
-  activeCategory = $('category').value;
-  $('questions').replaceChildren(element('legend','Issue questionnaire'));
-  for (const [key,text] of Object.entries(boot.categories[activeCategory].questions)) {
-    const label = element('label',text), input = element('textarea',null,{rows:'2',maxlength:'2000',name:`answer_${key}`});
-    input.dataset.key = key; input.value = drafts[activeCategory]?.[key] || ''; label.append(input); $('questions').append(label);
+function renderOverview(data){
+  $('tab-total').textContent=data.total;$('tab-escalations').textContent=data.counts.Escalated;
+  const metrics=[['Active tickets',data.active,'Across the workspace','active'],['Escalated',data.counts.Escalated,'Ready for specialist review','escalated'],['Waiting',data.counts.Waiting,'Awaiting the next step','waiting'],['Resolved',data.counts.Resolved,'A completed handoff','resolved']];
+  $('metrics').replaceChildren();
+  for(const [name,count,note,tone] of metrics){
+    const card=element('div',null,{class:`metric ${tone}`});card.append(element('p',name,{class:'metric-label'}),element('strong',String(count),{class:'metric-number'}),element('p',note,{class:'metric-note'}));$('metrics').append(card);
   }
-  preview();
-}
-function buildFields() {
-  for (const field of config.fields) {
-    const label = element('label',field.label + (field.required ? ' *' : '')), input = element(field.type === 'textarea' ? 'textarea' : ['select','workgroup'].includes(field.type) ? 'select' : 'input',null,{name:field.id});
-    if (field.required) input.required = true;
-    if (input.tagName === 'SELECT') {
-      input.append(new Option('Choose…',''));
-      const options = field.type === 'workgroup' ? config.workgroups.map(group=>[`${group.code} · ${group.name}`,group.code]) : field.options.map(value=>[value,value]);
-      for (const [text,value] of options) input.append(new Option(text,value));
-      if (field.id === 'priority' && field.options.includes('Normal')) input.value = 'Normal';
-    } else { input.maxLength = ({summary:200,requester:120,location:200,asset:100})[field.id] || (field.type === 'textarea' ? 4000 : 500); if (field.type === 'textarea') input.rows = 5; }
-    label.className = `span-${field.span}`; label.append(input); $('dynamic-fields').append(label);
+  $('recent-tickets').replaceChildren(data.recent.length?ticketList(data.recent,{onOpen:openTicket,agents:boot.operations.agents,config:boot.settings.config,compact:true}):emptyState('Ready for the first request.','Create a ticket or load the fictional sample workspace.'));
+  const attention=element('div',null,{class:'attention-count'});attention.append(element('strong',String(data.unassigned)),element('span','active tickets need an owner'));
+  const followup=element('p',`${data.counts.Escalated} escalated · ${data.counts.Waiting} waiting`,{class:'muted'});
+  const unassigned=element('button','Find unassigned tickets →',{type:'button',class:'text-button'});unassigned.onclick=()=>{$('filter-assignee').value='__unassigned';refreshQueue();navigation.go('tickets');};
+  $('attention').replaceChildren(attention,followup,unassigned);
+  $('workload').replaceChildren();
+  for(const group of data.workgroups){
+    const row=element('div',null,{class:'workload-row'}),label=element('div',null,{class:'section-head'});
+    label.append(element('span',groupName(group.workgroup,boot.settings.config)),element('strong',String(group.count)));
+    const bar=element('progress',null,{max:String(Math.max(data.active,1)),value:String(group.count),'aria-label':`${group.workgroup||'Unrouted'} active tickets`});
+    row.append(label,bar);$('workload').append(row);
   }
+  if(!data.workgroups.length)$('workload').append(emptyState('No active work.','New tickets will appear here once they are created.'));
+  $('seed-demo').disabled=data.seeded;$('seed-demo').textContent=data.seeded?'Sample workspace loaded':'Load sample tickets';
 }
-function loadTicket(value) {
-  for (const field of config.fields) $('ticket').elements.namedItem(field.id).value = value[field.id] || '';
-  $('category').value = value.category;
-  drafts[value.category] = value.answers || {}; questionnaire(false); dirty = true; preview();
-}
-function submission(value) { return {ticket:value,formatId:$('output-format').value,settingsRevision:boot.settings.revision,systemRevision:boot.settings.systemRevision}; }
-async function refresh() {
-  const data = await api(); $('saved').replaceChildren();
-  if (!data.tickets.length) $('saved').textContent = 'No tickets saved yet. Compose your first demo ticket above.';
-  for (const record of data.tickets) {
-    const item = element('details',null), summary = element('summary',`${record.id} · ${record.ticket.summary} · ${record.created_at}`), body = element('pre',record.formatted);
-    const button = element('button','Export saved JSON',{type:'button'}); button.onclick = ()=>download(exportTicket(record.ticket),`${record.id}.json`,'application/json');
-    item.append(summary,body,button); $('saved').append(item);
+function renderEscalations(data){
+  $('escalation-list').replaceChildren();
+  for(const record of data.tickets){
+    const card=element('article',null,{class:'panel escalation-card'}),head=element('div',null,{class:'section-head'});
+    head.append(element('span',record.id,{class:'ticket-code'}),badge(record.workflow.priority));
+    const title=element('h2',record.ticket.summary),reason=element('blockquote',record.workflow.escalation_reason||'Review the ticket history for escalation context.');
+    const route=element('p',`${record.workflow.workgroup} · ${groupName(record.workflow.workgroup,boot.settings.config,record)}`,{class:'route-label'});
+    const foot=element('div',null,{class:'section-head'}),button=element('button','Open escalation ↗',{type:'button'});button.onclick=()=>openTicket(record.id,button);
+    foot.append(element('span',agentName(record.workflow.assignee,boot.operations.agents),{class:'muted'}),timestamp(record.workflow.updated_at));
+    card.append(head,title,reason,route,foot,button);$('escalation-list').append(card);
   }
+  if(!data.tickets.length)$('escalation-list').append(emptyState('No escalations waiting.','Open a ticket and choose Escalate ticket when it needs specialist attention.'));
 }
-$('category').addEventListener('change',()=>{questionnaire(); dirty=true;});
-$('ticket').addEventListener('input',()=>{preview();dirty=true;});
-$('output-format').addEventListener('change',preview);
-$('ticket').addEventListener('submit',async event=>{
-  event.preventDefault(); $('save').disabled = true;
-  try {
-    const record = await api('tickets',{body:submission(ticket()),csrf:boot.csrf}); dirty=false; announce(`Saved ${record.id}.`);
-    try { await refresh(); } catch { announce(`Saved ${record.id}. Use Refresh tickets to update the list.`); }
-  } catch(error) { announce(error.message); }
-  finally { $('save').disabled = false; }
-});
-$('copy').onclick = ()=>copy($('preview').value,$('preview'));
-$('example').onclick = ()=>{loadTicket(sampleTicket(config));announce('Fictional example loaded.');};
-$('refresh').onclick = ()=>refresh().then(()=>announce('Ticket list refreshed.')).catch(error=>announce(error.message));
-$('export-json').onclick = ()=>download(exportTicket(ticket()),'tft-ticket.json','application/json');
-$('export-text').onclick = ()=>{ $('transfer').value=exportTicket(ticket(),'tags'); announce('Tagged text is ready below. Copy it or download it for a round trip.'); };
-$('copy-transfer').onclick = ()=>copy($('transfer').value,$('transfer'));
-$('download-output').onclick = ()=>download($('preview').value,'ticket-output.txt');
-$('import-file').onchange = async event=>{
-  const file=event.target.files[0]; if (!file) return;
-  if (file.size > 131072) { announce('Use a ticket file under 128 KB.'); return; }
-  $('transfer').value = await file.text(); pending=null; $('apply-import').disabled=true; announce('File loaded. Review the import before applying it.');
-};
-$('transfer').oninput=()=>{pending=null;$('apply-import').disabled=true;};
-$('review-import').onclick = async()=>{
-  pending=null;$('apply-import').disabled=true;
-  try {
-    const parsed=importTicket($('transfer').value,config,boot.categories);
-    const result=await api('validate',{body:submission(parsed),csrf:boot.csrf});
-    pending=result.ticket; $('import-preview').textContent=result.formatted; $('apply-import').disabled=false;
-    announce('Import validated. Review the preview, then choose Replace draft with import. No ticket has been saved.');
-  } catch(error) { $('import-preview').textContent='';announce(error.message); }
-};
-$('apply-import').onclick=()=>{if(pending){loadTicket(pending);pending=null;$('apply-import').disabled=true;announce('Imported values replaced the draft. Review them before saving.');}};
-window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
-try {
-  boot=await api('bootstrap');config=boot.settings.config;
-  for(const [key,value] of Object.entries(boot.categories)) $('category').append(new Option(value.label,key));
-  for(const format of config.formats) $('output-format').append(new Option(format.name,format.id));
-  $('output-format').value=config.defaultFormat;
-  buildFields();$('fields').disabled=false;for(const id of toolIds) $(id).disabled=false;questionnaire(false);await refresh();announce('Ready. Use fictional information only.');
-} catch(error){announce(error.message);}
+async function refresh(){
+  const [overview,escalations,activity]=await Promise.all([api('overview'),api('tickets',{query:{status:'Escalated'}}),api('activity')]);
+  renderOverview(overview);renderEscalations(escalations);
+  $('activity-list').replaceChildren(activity.events.length?eventList(activity.events,{onOpen:openTicket}):emptyState('The next chapter starts here.','Create or update a ticket to record its first activity.'));
+  $('recent-activity').replaceChildren(activity.events.length?eventList(activity.events.slice(0,4),{onOpen:openTicket,small:true}):emptyState('No changes yet.','Ticket activity will appear here.'));
+  await refreshQueue();
+}
+$('queue-filters').onsubmit=event=>event.preventDefault();
+$('search').oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(refreshQueue,220);};
+for(const id of ['filter-status','filter-workgroup','filter-priority','filter-assignee'])$(id).onchange=refreshQueue;
+$('clear-filters').onclick=()=>{for(const id of ['search','filter-status','filter-workgroup','filter-priority','filter-assignee'])$(id).value='';clearTimeout(searchTimer);refreshQueue();};
+$('refresh').onclick=async()=>{if(loading)return;loading=true;$('refresh').disabled=true;try{await refresh();announce('Workspace refreshed.');}catch(error){announce(error.message);}finally{loading=false;$('refresh').disabled=false;}};
+$('seed-demo').onclick=async()=>{if(loading)return;loading=true;$('seed-demo').disabled=true;try{const result=await api('seed',{body:{confirm:true},csrf:boot.csrf});await refresh();announce(result.added?`${result.added} fictional sample tickets added. Existing records were preserved.`:'The sample workspace is already loaded.');}catch(error){$('seed-demo').disabled=false;announce(error.message);}finally{loading=false;}};
+try{
+  boot=await api('bootstrap');details=mountTicketDetails({boot,onChanged:refresh});
+  for(const value of boot.operations.statuses)$('filter-status').append(new Option(value,value));
+  for(const group of boot.settings.config.workgroups)$('filter-workgroup').append(new Option(group.name,group.code));
+  for(const value of boot.operations.priorities)$('filter-priority').append(new Option(value,value));
+  for(const agent of boot.operations.agents)$('filter-assignee').append(new Option(agent.name,agent.id));
+  mountComposer({boot,onSaved:async record=>{await refresh();navigation.go('tickets');announce(`Created ${record.id}. Open it to assign, escalate or resolve the request.`);}});
+  const overview=await api('overview');
+  if(overview.total===0&&!overview.seeded)await api('seed',{body:{confirm:true},csrf:boot.csrf});
+  await refresh();$('refresh').disabled=false;
+  announce('Ready. Fictional demo data stays in this session. Agent assignment is a simulation.');
+}catch(error){announce(error.message);}
