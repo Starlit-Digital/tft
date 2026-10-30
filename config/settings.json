@@ -1,0 +1,91 @@
+{
+  "fields": [
+    {
+      "id": "summary",
+      "label": "Issue summary",
+      "type": "text",
+      "required": true,
+      "span": 2,
+      "options": []
+    },
+    {
+      "id": "requester",
+      "label": "Requester",
+      "type": "text",
+      "required": true,
+      "span": 1,
+      "options": []
+    },
+    {
+      "id": "priority",
+      "label": "Priority",
+      "type": "select",
+      "required": false,
+      "span": 1,
+      "options": [
+        "Low",
+        "Normal",
+        "High"
+      ]
+    },
+    {
+      "id": "workgroup",
+      "label": "Workgroup",
+      "type": "workgroup",
+      "required": false,
+      "span": 2,
+      "options": []
+    },
+    {
+      "id": "location",
+      "label": "Location",
+      "type": "text",
+      "required": false,
+      "span": 1,
+      "options": []
+    },
+    {
+      "id": "asset",
+      "label": "Asset",
+      "type": "text",
+      "required": false,
+      "span": 1,
+      "options": []
+    },
+    {
+      "id": "troubleshooting",
+      "label": "Troubleshooting",
+      "type": "textarea",
+      "required": false,
+      "span": 2,
+      "options": []
+    }
+  ],
+  "workgroups": [
+    {
+      "code": "HELP-01",
+      "name": "General support"
+    },
+    {
+      "code": "APPS-02",
+      "name": "Application support"
+    },
+    {
+      "code": "NET-03",
+      "name": "Network support"
+    }
+  ],
+  "formats": [
+    {
+      "id": "standard",
+      "name": "Service desk",
+      "body": "{{summary}}\nCategory: {{category.label}}\nRequester: {{requester}}\nPriority: {{priority}}\nWorkgroup: {{workgroup.code}} / {{workgroup.name}}\nLocation: {{location}}\nAsset: {{asset}}\n\n{{answers}}\n\nTroubleshooting:\n{{troubleshooting}}"
+    },
+    {
+      "id": "handoff",
+      "name": "Escalation handoff",
+      "body": "HANDOFF TO {{workgroup.code}}\n{{summary}}\n\nRequested by: {{requester}}\nImpact: {{priority}}\n\n{{answers}}\n\nActions taken:\n{{troubleshooting}}"
+    }
+  ],
+  "defaultFormat": "standard"
+}

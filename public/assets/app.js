@@ -1,61 +1,93 @@
-import {formatTicket} from './format.js';
-const $ = id => document.getElementById(id);
-let categories = {}, csrf = '';
+import {$,element,announce,api,download,copy} from './common.js';
+import {renderTemplate,exportTicket,importTicket,sampleTicket} from './model.js';
+let boot, config, activeCategory = '', pending = null, dirty = false;
 const drafts = {};
-let activeCategory = '';
-function status(message) { $('status').textContent = message; }
+const toolIds=['example','export-json','export-text','review-import','import-file','copy','copy-transfer','download-output'];
+for(const id of toolIds) $(id).disabled=true;
 function ticket() {
-  const data = Object.fromEntries(new FormData($('ticket')));
-  return {...Object.fromEntries(['requester','summary','priority','location','asset','troubleshooting','category'].map(key=>[key,(data[key] || '').trim()])), answers:Object.fromEntries([...$('questions').querySelectorAll('textarea')].map(el=>[el.dataset.key,el.value.trim()]))};
+  return {...Object.fromEntries(config.fields.map(field=>[field.id,($('ticket').elements.namedItem(field.id)?.value || '').trim()])),category:$('category').value,answers:Object.fromEntries([...$('questions').querySelectorAll('textarea')].map(input=>[input.dataset.key,input.value.trim()]))};
 }
-function preview() { $('preview').value = formatTicket(ticket(),categories); }
-function questionnaire() {
-  if (activeCategory) drafts[activeCategory] = ticket().answers;
+function preview() {
+  try { $('preview').value = renderTemplate(ticket(),config,boot.categories,$('output-format').value); }
+  catch(error) { announce(error.message); }
+}
+function questionnaire(save = true) {
+  if (save && activeCategory) drafts[activeCategory] = ticket().answers;
   activeCategory = $('category').value;
-  $('questions').replaceChildren(Object.assign(document.createElement('legend'),{textContent:'Issue questionnaire'}));
-  for (const [key,text] of Object.entries(categories[activeCategory].questions)) {
-    const label = document.createElement('label'); label.append(document.createTextNode(text));
-    const input = document.createElement('textarea'); input.rows = 2; input.maxLength = 2000; input.name = `answer_${key}`; input.dataset.key = key; input.value = drafts[activeCategory]?.[key] || ''; label.append(input); $('questions').append(label);
+  $('questions').replaceChildren(element('legend','Issue questionnaire'));
+  for (const [key,text] of Object.entries(boot.categories[activeCategory].questions)) {
+    const label = element('label',text), input = element('textarea',null,{rows:'2',maxlength:'2000',name:`answer_${key}`});
+    input.dataset.key = key; input.value = drafts[activeCategory]?.[key] || ''; label.append(input); $('questions').append(label);
   }
   preview();
 }
-async function api(url,options) {
-  const response = await fetch(url,options); const data = await response.json();
-  if (!response.ok) throw new Error(data.error || 'Unable to complete the request.');
-  return data;
-}
-async function refresh() {
-  const data = await api('api.php'); $('saved').replaceChildren();
-  if (!data.tickets.length) $('saved').textContent = 'No tickets saved yet. Compose your first demo ticket above.';
-  for (const record of data.tickets) {
-    const item = document.createElement('details'), summary = document.createElement('summary'), body = document.createElement('pre');
-    summary.textContent = `${record.id} · ${record.ticket.summary} · ${record.ticket.priority} · ${record.created_at}`;
-    body.textContent = record.formatted; item.append(summary,body); $('saved').append(item);
+function buildFields() {
+  for (const field of config.fields) {
+    const label = element('label',field.label + (field.required ? ' *' : '')), input = element(field.type === 'textarea' ? 'textarea' : ['select','workgroup'].includes(field.type) ? 'select' : 'input',null,{name:field.id});
+    if (field.required) input.required = true;
+    if (input.tagName === 'SELECT') {
+      input.append(new Option('Choose…',''));
+      const options = field.type === 'workgroup' ? config.workgroups.map(group=>[`${group.code} · ${group.name}`,group.code]) : field.options.map(value=>[value,value]);
+      for (const [text,value] of options) input.append(new Option(text,value));
+      if (field.id === 'priority' && field.options.includes('Normal')) input.value = 'Normal';
+    } else { input.maxLength = ({summary:200,requester:120,location:200,asset:100})[field.id] || (field.type === 'textarea' ? 4000 : 500); if (field.type === 'textarea') input.rows = 5; }
+    label.className = `span-${field.span}`; label.append(input); $('dynamic-fields').append(label);
   }
 }
-$('category').addEventListener('change',questionnaire);
-$('ticket').addEventListener('input',preview);
+function loadTicket(value) {
+  for (const field of config.fields) $('ticket').elements.namedItem(field.id).value = value[field.id] || '';
+  $('category').value = value.category;
+  drafts[value.category] = value.answers || {}; questionnaire(false); dirty = true; preview();
+}
+function submission(value) { return {ticket:value,formatId:$('output-format').value,settingsRevision:boot.settings.revision,systemRevision:boot.settings.systemRevision}; }
+async function refresh() {
+  const data = await api(); $('saved').replaceChildren();
+  if (!data.tickets.length) $('saved').textContent = 'No tickets saved yet. Compose your first demo ticket above.';
+  for (const record of data.tickets) {
+    const item = element('details',null), summary = element('summary',`${record.id} · ${record.ticket.summary} · ${record.created_at}`), body = element('pre',record.formatted);
+    const button = element('button','Export saved JSON',{type:'button'}); button.onclick = ()=>download(exportTicket(record.ticket),`${record.id}.json`,'application/json');
+    item.append(summary,body,button); $('saved').append(item);
+  }
+}
+$('category').addEventListener('change',()=>{questionnaire(); dirty=true;});
+$('ticket').addEventListener('input',()=>{preview();dirty=true;});
+$('output-format').addEventListener('change',preview);
 $('ticket').addEventListener('submit',async event=>{
   event.preventDefault(); $('save').disabled = true;
   try {
-    const record = await api('api.php',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':csrf},body:JSON.stringify(ticket())});
-    status(`Saved ${record.id}.`);
-    try { await refresh(); } catch { status(`Saved ${record.id}. The ticket list could not refresh. Use Refresh tickets.`); }
-  } catch(error) { status(error.message); }
+    const record = await api('tickets',{body:submission(ticket()),csrf:boot.csrf}); dirty=false; announce(`Saved ${record.id}.`);
+    try { await refresh(); } catch { announce(`Saved ${record.id}. Use Refresh tickets to update the list.`); }
+  } catch(error) { announce(error.message); }
   finally { $('save').disabled = false; }
 });
-$('copy').addEventListener('click',async()=>{
-  try { await navigator.clipboard.writeText($('preview').value); status('Ticket copied.'); }
-  catch { $('preview').focus(); $('preview').select(); status('Copy permission unavailable. The text is selected. Use your keyboard copy command.'); }
-});
-$('example').addEventListener('click',()=>{
-  const form = $('ticket');
-  for (const [key,value] of Object.entries({requester:'Alex Example',summary:'Unable to open the team calendar',priority:'Normal',location:'Demo office',asset:'DEMO-001',troubleshooting:'Restarted the application. The issue remains.'})) form.elements[key].value = value;
-  preview(); status('Fictional example loaded. Add questionnaire answers before saving.');
-});
-$('refresh').addEventListener('click',()=>refresh().then(()=>status('Ticket list refreshed.')).catch(error=>status(error.message)));
+$('copy').onclick = ()=>copy($('preview').value,$('preview'));
+$('example').onclick = ()=>{loadTicket(sampleTicket(config));announce('Fictional example loaded.');};
+$('refresh').onclick = ()=>refresh().then(()=>announce('Ticket list refreshed.')).catch(error=>announce(error.message));
+$('export-json').onclick = ()=>download(exportTicket(ticket()),'tft-ticket.json','application/json');
+$('export-text').onclick = ()=>{ $('transfer').value=exportTicket(ticket(),'tags'); announce('Tagged text is ready below. Copy it or download it for a round trip.'); };
+$('copy-transfer').onclick = ()=>copy($('transfer').value,$('transfer'));
+$('download-output').onclick = ()=>download($('preview').value,'ticket-output.txt');
+$('import-file').onchange = async event=>{
+  const file=event.target.files[0]; if (!file) return;
+  if (file.size > 131072) { announce('Use a ticket file under 128 KB.'); return; }
+  $('transfer').value = await file.text(); pending=null; $('apply-import').disabled=true; announce('File loaded. Review the import before applying it.');
+};
+$('transfer').oninput=()=>{pending=null;$('apply-import').disabled=true;};
+$('review-import').onclick = async()=>{
+  pending=null;$('apply-import').disabled=true;
+  try {
+    const parsed=importTicket($('transfer').value,config,boot.categories);
+    const result=await api('validate',{body:submission(parsed),csrf:boot.csrf});
+    pending=result.ticket; $('import-preview').textContent=result.formatted; $('apply-import').disabled=false;
+    announce('Import validated. Review the preview, then choose Replace draft with import. No ticket has been saved.');
+  } catch(error) { $('import-preview').textContent='';announce(error.message); }
+};
+$('apply-import').onclick=()=>{if(pending){loadTicket(pending);pending=null;$('apply-import').disabled=true;announce('Imported values replaced the draft. Review them before saving.');}};
+window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
 try {
-  const data = await api('api.php?action=bootstrap'); categories = data.categories; csrf = data.csrf;
-  for (const [key,value] of Object.entries(categories)) $('category').append(new Option(value.label,key));
-  $('fields').disabled = false; questionnaire(); await refresh(); status('Ready. Use fictional information only.');
-} catch(error) { status(error.message); }
+  boot=await api('bootstrap');config=boot.settings.config;
+  for(const [key,value] of Object.entries(boot.categories)) $('category').append(new Option(value.label,key));
+  for(const format of config.formats) $('output-format').append(new Option(format.name,format.id));
+  $('output-format').value=config.defaultFormat;
+  buildFields();$('fields').disabled=false;for(const id of toolIds) $(id).disabled=false;questionnaire(false);await refresh();announce('Ready. Use fictional information only.');
+} catch(error){announce(error.message);}

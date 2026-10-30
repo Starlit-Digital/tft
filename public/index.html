@@ -1,21 +1,17 @@
-<!doctype html>
-<html lang="en" data-theme="dark">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>TFT | Ticket workspace</title><link rel="stylesheet" href="assets/app.css"><script type="module" src="assets/app.js"></script></head>
-<body><main>
-<header><p class="eyebrow">TFT / DEMO WORKSPACE</p><h1>A clearer ticket.<br>A better handoff.</h1><p>Choose an issue, capture the details and copy a consistent ticket.</p><p class="notice">Use fictional information only. Saved tickets belong to this browser session. This is an early local demonstration.</p></header>
+<!doctype html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>TFT | Ticket workspace</title><link rel="stylesheet" href="assets/vendor/tokens.css"><link rel="stylesheet" href="assets/accessibility/shared/content.css"><link rel="stylesheet" href="assets/app.css"><script type="module" src="assets/accessibility/components/preferences-center/index.js"></script><script type="module" src="assets/app.js"></script></head>
+<body data-default-theme="dark" data-sdou-a11y-content><main>
+<nav aria-label="Main navigation"><a class="wordmark" href="index.html">TFT <span>Ticket workspace</span></a><div><a href="index.html" aria-current="page">Tickets</a><a href="settings.html">Settings</a></div></nav>
+<header><p class="eyebrow">CAPTURE / FORMAT / HAND OFF</p><h1>A clearer ticket.<br><span>A better handoff.</span></h1><p>Capture the issue, choose a workgroup and put every detail in the right format.</p><p class="notice">Use fictional information only. Saved tickets and personal settings belong to this demo session.</p></header>
 <p id="status" role="status" aria-live="polite">Loading workspace…</p>
-<div class="workspace"><section aria-labelledby="compose"><h2 id="compose">Compose a ticket</h2>
-<form id="ticket"><fieldset disabled id="fields"><legend>Issue details</legend>
-<label>Issue category<select name="category" id="category"></select></label>
-<label>Requester<input name="requester" maxlength="120" required autocomplete="off"></label>
-<label>Issue summary<input name="summary" maxlength="200" required></label>
-<div class="pair"><label>Priority<select name="priority"><option>Low</option><option selected>Normal</option><option>High</option></select></label><label>Asset<input name="asset" maxlength="100"></label></div>
-<label>Location<input name="location" maxlength="200"></label>
+<div class="workspace"><section class="panel" aria-labelledby="compose"><div class="section-head"><h2 id="compose">Compose a ticket</h2><a href="settings.html">Edit fields</a></div>
+<form id="ticket"><fieldset disabled id="fields"><legend class="sr-only">Issue details</legend>
+<label>Issue category<select name="category" id="category"></select></label><div id="dynamic-fields" class="form-grid"></div>
 <fieldset id="questions"><legend>Issue questionnaire</legend></fieldset>
-<label>Troubleshooting<textarea name="troubleshooting" maxlength="4000" rows="5"></textarea></label>
-<div class="actions"><button type="submit" id="save">Save demo ticket</button><button type="button" id="example">Load fictional example</button></div>
+<div class="actions"><button type="submit" id="save">Save demo ticket</button><button type="button" id="example">Load example</button></div>
 </fieldset></form></section>
-<section aria-labelledby="preview-title"><h2 id="preview-title">Ticket preview</h2><p>Formatting updates as you type.</p><label for="preview">Copyable ticket text</label><textarea id="preview" readonly rows="24"></textarea><button type="button" id="copy">Copy ticket</button></section></div>
-<section aria-labelledby="saved-title"><h2 id="saved-title">Saved tickets</h2><p>First administration scaffold. Shows the most recent 100 tickets in this session.</p><button id="refresh" type="button">Refresh tickets</button><div id="saved"></div></section>
-<footer>Generic service desk demonstration. Public hosting and full administration are planned.</footer>
-</main></body></html>
+<section class="panel" aria-labelledby="preview-title"><h2 id="preview-title">Output preview</h2><label>Output format<select id="output-format"></select></label><label for="preview">Copyable ticket text</label><textarea id="preview" readonly rows="24"></textarea><div class="actions"><button type="button" id="copy">Copy output</button><button type="button" id="download-output">Download output</button></div><p class="muted">Output is text. Choose a transfer export below when you need to import it again.</p></section></div>
+<section class="panel" aria-labelledby="transfer-title"><div class="section-head"><div><p class="eyebrow">IMPORT / EXPORT</p><h2 id="transfer-title">Bring the details with you.</h2></div><div class="actions"><button type="button" id="export-json">Export JSON</button><button type="button" id="export-text">Export tagged text</button></div></div>
+<p>Import a TFT JSON or tagged text export. Multiline values and questionnaire answers keep their structure.</p><label>Open ticket export<input type="file" id="import-file" accept=".json,.txt,application/json,text/plain"></label>
+<div class="workspace"><div><label for="transfer">Paste ticket information</label><textarea id="transfer" rows="12" maxlength="131072" spellcheck="false" placeholder="TFT-TAGS/1"></textarea><div class="actions"><button type="button" id="review-import">Review import</button><button type="button" id="copy-transfer">Copy transfer text</button></div></div><div><h3>Import preview</h3><pre id="import-preview" class="output-preview">Review an import to see the proposed ticket here.</pre><button type="button" id="apply-import" disabled>Replace draft with import</button><p class="muted">Applying replaces the draft fields. It does not save a ticket.</p></div></div></section>
+<section class="panel" aria-labelledby="saved-title"><div class="section-head"><h2 id="saved-title">Saved tickets</h2><button id="refresh" type="button">Refresh tickets</button></div><p>Most recent 100 tickets in this session. Expand a ticket to read its original output or export its fields.</p><div id="saved"></div></section>
+<footer>Generic service desk demonstration. Full staff accounts and public hosting are pending.</footer></main><sdou-preferences-center target="body" storage-key="tft.reading.v1"></sdou-preferences-center></body></html>

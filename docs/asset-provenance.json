@@ -1,0 +1,37 @@
+[
+  {
+    "source": "templates/starlit/accessibility/shared/base.js",
+    "target": "tft/public/assets/accessibility/shared/base.js",
+    "sha256": "63909d98c7e51db1bdcd7bc9c1144ed28b5d20d3da5ce786420932b528c2fd75"
+  },
+  {
+    "source": "templates/starlit/accessibility/shared/preferences.js",
+    "target": "tft/public/assets/accessibility/shared/preferences.js",
+    "sha256": "d3b44176517e12b850dfdaf0bf46e19246037740d609218836aa67b84a0154ac"
+  },
+  {
+    "source": "templates/starlit/accessibility/shared/ui.css",
+    "target": "tft/public/assets/accessibility/shared/ui.css",
+    "sha256": "228b364361c45c1099a5cecf01a6e888b73dcb4040403bbff9ce2d421789570d"
+  },
+  {
+    "source": "templates/starlit/accessibility/shared/content.css",
+    "target": "tft/public/assets/accessibility/shared/content.css",
+    "sha256": "9b630e24a9f7df71e20d3590be6f55623c3eba298041332fe990e6641405b4a7"
+  },
+  {
+    "source": "templates/starlit/accessibility/shared/large-pointer.svg",
+    "target": "tft/public/assets/accessibility/shared/large-pointer.svg",
+    "sha256": "4d252470680dacd664ff7d7c9f140c80b5ff29ed011439e264c3c9ed53175136"
+  },
+  {
+    "source": "templates/starlit/accessibility/components/preferences-center/index.js",
+    "target": "tft/public/assets/accessibility/components/preferences-center/index.js",
+    "sha256": "ac12f4aabb6318d9d90dbd5f8f780621bbcd9489d0a52f64fbb5f42b06ae55c4"
+  },
+  {
+    "source": "templates/starlit/accessibility/components/preferences-center/component.css",
+    "target": "tft/public/assets/accessibility/components/preferences-center/component.css",
+    "sha256": "ae11d076d15bf42828f60626d29d0d22cb56ced8fa513b078d443def6d742a19"
+  }
+]

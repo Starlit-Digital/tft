@@ -1,0 +1,18 @@
+/* Starlit Digital. Canonical resource tokens, derived from sltd.ca/assets/studio.css. */
+:root {
+  --sd-navy-950:#09151f;--sd-navy-900:#102330;--sd-navy-800:#183240;--sd-navy-700:#254653;--sd-navy-600:#3b5260;
+  --sd-gold:#e8c58e;--sd-gold-ink:#76511e;--sd-cream:#f2e7d4;--sd-paper:#f7f3eb;--sd-white:#fffcf7;
+  --sd-teal:#79b7b5;--sd-teal-ink:#315f61;--sd-teal-pale:#dce9e4;--sd-muted-dark:#bacbd1;--sd-muted-light:#455d68;
+  --sd-border-light:#b8b4a9;--sd-error:#c45a53;--sd-success:#79b7b5;
+  --sd-font-display:Georgia,"Times New Roman",serif;
+  --sd-font-body:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --sd-font-mono:ui-monospace,"SFMono-Regular",Consolas,monospace;
+  --sd-space-1:.25rem;--sd-space-2:.5rem;--sd-space-3:.75rem;--sd-space-4:1rem;--sd-space-6:1.5rem;--sd-space-8:2rem;--sd-space-12:3rem;--sd-space-16:4rem;--sd-space-24:6rem;
+  --sd-radius-sm:8px;--sd-radius:18px;--sd-radius-lg:28px;--sd-max:1120px;--sd-gutter:clamp(20px,4vw,48px);
+  --sd-section:clamp(64px,8vw,112px);--sd-ease:cubic-bezier(.2,.8,.2,1);--sd-duration:180ms;
+  --sd-bg:var(--sd-navy-950);--sd-panel:var(--sd-navy-900);--sd-raised:var(--sd-navy-800);--sd-ink:var(--sd-cream);--sd-muted:var(--sd-muted-dark);--sd-accent:var(--sd-gold);--sd-secondary:var(--sd-teal);--sd-line:var(--sd-navy-600);--sd-on-accent:var(--sd-navy-950);
+  color-scheme:dark;
+}
+:root[data-sd-theme="light"] {
+  --sd-bg:var(--sd-paper);--sd-panel:var(--sd-white);--sd-raised:#ebe5d9;--sd-ink:var(--sd-navy-800);--sd-muted:var(--sd-muted-light);--sd-accent:var(--sd-gold-ink);--sd-secondary:var(--sd-teal-ink);--sd-line:var(--sd-border-light);--sd-on-accent:var(--sd-white);color-scheme:light;
+}

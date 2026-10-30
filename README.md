@@ -1,45 +1,48 @@
 # TFT
 
-A generic ticket workspace, based on the workflow of the owner's historical ticket formatting tool. This first scaffold keeps most interaction in the browser and adds a small PHP persistence boundary.
+A configurable ticket workspace based on the owner's historical ticket formatting workflow. Most interaction runs in the browser, with a PHP validation and SQLite persistence boundary.
 
 ## Run locally
 
-Requires PHP 8.2 or later with PDO SQLite. Node is needed only for formatter tests.
+Requires PHP 8.2 or later with PDO SQLite. Node and Python 3 are needed for tests.
 
 ```sh
 make test
 make serve
 ```
 
-Open http://127.0.0.1:8094. Only `public/` is the web root. The launcher enables the demo API explicitly. The API otherwise returns 503. Storage defaults to `var/tickets.sqlite`, outside the web root and excluded from Git. `TFT_DB_PATH` can select another private location.
+Open http://127.0.0.1:8094. Settings and the field editor are at http://127.0.0.1:8094/settings.html.
+
+Only `public/` is the web root. The launcher enables the demo API explicitly. The API otherwise returns 503. Storage defaults to `var/tickets.sqlite`, outside the web root and excluded from Git. `TFT_DB_PATH` can select another private location. `TFT_ADMIN_TOKEN` enables authenticated system settings writes when the host configures a token of at least 32 characters. Personal settings work without that token.
 
 ## Included
 
-* Four generic issue categories with category specific questionnaires.
-* Immediate text preview, clipboard copying and manual copy fallback.
-* Server validation and authoritative saved formatting.
-* SQLite submissions and a session scoped saved ticket list, forming the first administration scaffold.
-* Session isolation, CSRF checks, bounded requests and safe text rendering.
-* Fictional example data only. No original application code, credentials, records, branding or internal endpoints were imported.
+* Configurable fields, labels, dropdown choices, required flags, order and column width.
+* Generic workgroup codes and names, plus four issue category questionnaires.
+* Named output templates with a tag picker, live preview, duplication and default selection.
+* Personal session settings, inherited system defaults and administrator protected shared settings writes.
+* Draft undo, explicit discard controls and conflict detection across browser windows.
+* Ticket preview, clipboard copying and plain text downloads.
+* Versioned JSON and tagged text ticket import/export, with a validation preview before replacing the draft.
+* Saved submissions, original output and settings snapshots, with session scoped ticket browsing.
+* Shared Starlit accessibility preferences and dark default presentation.
 
-The session cookie identifies a private demo workspace, not a staff account. New browser sessions cannot retrieve old tickets. Copying a ticket does not save it. Saving does not clear the form. The current list shows up to 100 newest tickets.
+Use fictional information only. No original code, credentials, records, corporate branding or internal endpoints were imported. See [Field editor](docs/field-editor.md) for behavior, tag syntax, API scope and tested limits.
 
-## Scope and next steps
+## Scope
 
-This is an initial local scaffold. It has not been publicly deployed. It is not yet a multiuser helpdesk product. Full administration needs sign in, authorization roles, assignment, status history, search, audit records, retention and abuse controls. Public demo hosting also needs an isolated workspace lifecycle and automatic cleanup. Do not use real support records in this version.
+This is a local demonstration, not a publicly deployed helpdesk. The session cookie identifies a private demo workspace, not a staff account. New sessions cannot retrieve prior sessions' tickets or personal settings. System settings are shared across the installation and require the configured host administrator token to write.
 
-The core historical flow has been examined. Full archive inventory and automated sensitive content triage are complete; manual review of every historical file and nested archive is pending. See `docs/recovery.md` for the recovery boundary and `docs/roadmap.md` for the next stages.
+Full administration still needs staff sign in, roles, assignment, status history, search, audit records, retention and abuse controls. Public demo hosting needs an isolated workspace lifecycle, expiry and quotas. No external service, email delivery or deployment target is configured.
 
-## Presentation status
+The core historical flow has been examined. Full inventory and automated sensitive content triage are complete; manual review of every historical file remains pending. See [Recovery](docs/recovery.md), [Datastore](docs/datastore.md) and [Roadmap](docs/roadmap.md).
 
-The current interface is a functional wireframe. The Starlit library and Apple HIG foundation, text field and button guidance informed semantic labels, focus feedback, plain text output and responsive stacking. A finished SiteCraft composition, shared preferences center, light theme, approved TFT monogram and full visual accessibility review are deferred to the design pass. No template adoption or completed design audit is claimed.
+## Presentation and verification
 
-DYWS integration is deferred. The scaffold has no ordering, catalog or payment requirement. No external service, email destination or deployment target is configured.
+The editor adapts the DYWS Order forms interaction pattern and the Starlit Review bench workspace composition. Palette tokens and the full preferences center come from the shared Starlit library. Asset digests, attribution and Apple HIG web adaptations are documented with the field editor.
 
-## Source
+Backend, transfer, renderer parity, authorization and HTTP tests pass. A DOM interaction smoke test passes. Real browser visual and accessibility verification is pending because local browser access is disabled in Work settings. No accessibility certification is claimed.
 
-Private repository: https://github.com/Starlit-Digital/tft
+DYWS runtime integration is deferred. TFT has no ordering, catalog or payment requirement.
 
-## Verification
-
-PHP persistence and validation tests, all category browser/server formatter parity checks, and HTTP bootstrap, CSRF rejection, save/list and workspace isolation checks passed locally. Browser visual and interaction verification remains pending because local browser access is disabled in the current Work settings.
+Private source repository: https://github.com/Starlit-Digital/tft
