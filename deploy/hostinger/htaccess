@@ -4,6 +4,7 @@ SetHandler application/x-lsphp82
 Options -Indexes
 DirectoryIndex index.html
 RewriteEngine On
+RewriteCond %{THE_REQUEST} \s/+tft/index\.html[?\s] [NC]
 RewriteRule ^index\.html$ /tft/ [R=301,L]
 RewriteRule ^(?:src|config|var|docs|tests|scripts|node_modules)(?:/|$) - [F,L,NC]
 <IfModule mod_expires.c>
